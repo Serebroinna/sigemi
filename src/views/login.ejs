@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%-include('./partials/links')%>
+    <title>SIGEMI</title>
+</head>
+<body>
+    <%-include('./partials/nav')%>
+    <section id="section-login">
+        <% if(error){ %>
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong><%= error %></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        <% } %>
+        <div class="container vh-100 d-flex justify-content-center align-items-center">
+            <div class="card" id="card-contact">
+                <div class="card-header">
+                    <h3>Login</h3>
+                </div>
+                <div class="card-body text-start">
+                    <form action="/login" method="post">
+                        <div class="mb-3">
+                            <label for="email">Email</label>
+                            <input name="email" type="email" placeholder="Email" class="form-control" required>
+                        </div>
+                        <div class="mb-3">
+                            <label for="message">Contraseña</label>
+                            <input name="password" type="password" placeholder="Password" class="form-control" required>
+                        </div>
+                        <div class="container d-flex justify-content-center align-items-center">
+                            <button type="submit" class="btn btn-primary" id="login">Entrar</button>
+                        </div>                 
+                    </form>
+                </div>
+            </div>
+        </div> 
+    </section> 
+</body>
+</html>

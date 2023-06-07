@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%-include('./partials/links')%>
+    <title>SIGEMI</title>
+    <style type="text/css">
+        #map {
+        width: 100%;
+        height: 100%;
+        border-radius: 5%;
+        }
+    </style>
+</head>
+<body>
+    <%-include('./partials/nav')%>
+    <div class="container">
+        <div class="row mt-4">
+            <div class="col-md-5">
+                <form action="/home" method="post">
+                    <div class="form-group mt-3">
+                        <input type="text" name="nombre" placeholder="Nombre(s)" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="paterno" placeholder="Paterno" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="materno" placeholder="Materno" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="calle" placeholder="Calle" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="numero" placeholder="N° exterior" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="municipio" placeholder="Municipio" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="estado" placeholder="Estado" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <input type="text" name="telefono" placeholder="Telefono" class="form-control">
+                    </div>
+                    <div class="form-group mt-3">
+                        <select name="lider" class="form-select" aria-label="Default select example">
+                            <% usuarios.forEach((usuario)=> { %>
+                            <option value="<%= usuario.id %>"><%= usuario.nombre %></option>
+                            <% }); %>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn mt-3 btn-primary" id="btn-agregar">Afiliar</button>
+                </form>
+            </div>
+            <div class="col-md-7">
+                <!-- <table class="table table-bordered table-hover">
+                    <thead class="bg-dark" style="color: white;">
+                        <tr>
+                            <td>id</td>
+                            <td>nombre</td>
+                            <td>s.nombre</td>
+                            <td>apellido</td>
+                            <td>s.apellido</td>
+                            <td>domicilio</td>
+                            <td>telefono</td>
+                            <td>lider</td>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <% registros.forEach((afiliado)=> { %>
+                        <tr>
+                            <td><%= afiliado.id %></td>
+                            <td><%= afiliado.nombre %></td>
+                            <td><%= afiliado.segundo_nombre %></td>
+                            <td><%= afiliado.apellido %></td>
+                            <td><%= afiliado.segundo_apellido %></td>
+                            <td><%= afiliado.domicilio %></td>
+                            <td><%= afiliado.telefono %></td>
+                            <td><%= afiliado.lider %></td>
+                        </tr> 
+                        <% }); %>   
+                    </tbody>
+                </table> -->
+                <div id="map">
+                    <script>
+                        var mymap = L.map('map').setView([20.721173, -103.392536], 15);
+                        var persona = L.icon({
+                            iconUrl: 'img/silueta-de-persona.png',
+                            shadowUrl: '',
+                            iconSize:     [30, 40], // size of the icon
+                            popupAnchor:  [0, -15] // point from which the popup should open relative to the iconAnchor
+                        });
+                        var marker = L.marker([20.725695, -103.396305],{icon: persona}).addTo(mymap);
+                        
+                        marker.bindPopup("Militante").openPopup();
+                        L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                            maxZoom: 18,
+                            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
+                            id: 'mapbox/streets-v11',
+                            tileSize: 512,
+                            zoomOffset: -1
+                        }).addTo(mymap);
+                    </script>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
