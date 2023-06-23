@@ -75,7 +75,6 @@ export const postRegistros = async (req, res) => {
             lat = data.data[0]['lat']
             lon = data.data[0]['lon']
             pool.query('insert into afiliados (nombre,paterno,materno,latitud,longitud,telefono,lider) values (?,?,?,?,?,?,?)',[nombre,paterno,materno,lat,lon,telefono,lider])
-            console.log("Inserado(: o eso creemos")
         })
         res.redirect('/home')
     }catch (error){
