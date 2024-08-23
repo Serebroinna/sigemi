@@ -11,7 +11,7 @@ const app = express();
 const __dirname = dirname(fileURLToPath(import.meta.url));
 app.set("views", join(__dirname, "views"));
 app.set("view engine", "ejs");
-app.use(express.static(join(__dirname, "public")));
+app.use(express.static(join(__dirname, "/public"))); // res.sendFile(path.join(__dirname + '/build/index.html'));
 app.use(express.json());
 app.use(express.urlencoded({extended: false})) //este metodo entiende los datos que vienen desde los forms
 app.use(methodOverride('_method')) //midleware para sobreecribir los metodos put y push 
@@ -20,13 +20,13 @@ app.use(session({
     resave: true,
     saveUninitialized: true
 }));
-
-
-//rutas
+// rutas
 app.use(indexRoutes)
+// ruta por defecto
 app.use((req,res,next)=>{
     res.redirect('/')
 });
+
 
 export default app;
 

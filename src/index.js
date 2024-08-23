@@ -3,4 +3,4 @@ import app from './app.js'
 import "./db.js"
 
 app.listen(PORT)
-console.log('Server on port ', PORT)
+/* console.log('Server on port ', PORT) */

@@ -5,6 +5,8 @@ import fetch from 'node-fetch'
 import usuarioSchema from '../models/usuarios.js'
 import afiliadosSchema from '../models/afiliado.js'
 import lideresSchema from '../models/lideres.js'
+import partidosSchema from '../models/partidos.js'
+
 
 //VERIFICAR SI NO SE HA INICIADO SESION
 export const login = async (req,res) => {
@@ -66,9 +68,9 @@ export const getRegistros = async (req, res) => {
             //Queries MongoDB
             const afiliados = await afiliadosSchema.find()
             const lideres = await lideresSchema.find()
-            res.render("home", {registros: afiliados, lideres: lideres})
+            const partidos = await partidosSchema.find()
+            res.render("home", {registros: afiliados, lideres: lideres, partidos: partidos})
         } catch (error){
-            console.log(error)
             return res.status(500).json('Algo ha salido mal ):')
         } 
     }
@@ -80,14 +82,16 @@ export const postRegistros = async (req, res) => {
     try{
         //geocoding
         let direccion = req.body.calle+' '+req.body.numero+', '+req.body.municipio+', '+req.body.estado;
-        let URL = "https://api.mymappi.com/v2/geocoding/direct?apikey=6eaf4e33-efbc-4115-8beb-54ea4da971c3&q="+direccion;
-        fetch(URL).then((ubicacion)=>{
-            return ubicacion.json()
-        }).then((data)=>{
-            latitud = data.data[0]['lat']
-            longuitud = data.data[0]['lon']
+        //let URL = "https://api.mymappi.com/v2/geocoding/direct?apikey=6eaf4e33-efbc-4115-8beb-54ea4da971c3&q="+direccion; ESTA API DEJO DE FUNCIONAR
+        let URL = "https://nominatim.openstreetmap.org/search?q="+direccion+"&format=geocodejson";
+            fetch(URL).then((ubicacion)=>{ 
+                return ubicacion.json()
+            }).then((data)=>{
+                latitud = data.features[0].geometry.coordinates[1]
+                longuitud = data.features[0].geometry.coordinates[0]
             //Queries MySQL
             //pool.query('insert into afiliados (nombre,paterno,materno,latitud,longitud,telefono,lider) values (?,?,?,?,?,?,?)',[nombre,paterno,materno,lat,lon,telefono,lider])
+                
             //Queries MongoDB
             const afiliado = {
                 nombre: req.body.nombre,
@@ -102,11 +106,60 @@ export const postRegistros = async (req, res) => {
             }
             const insertar = afiliadosSchema(afiliado)
             insertar.save()
-            console.log(insertar)
-        }) 
-        
+            })
         res.redirect("/home")
     }catch (error){
         res.status(500).json('No se puedo completar el registro')
+        console.log(error)
     }
+}
+
+//EDITAR AFILIADO
+//abre una vista previa con los datos del registro que se quiere editar
+export const editRegistros = async (req, res) => {
+    const {id} = req.params
+    //const {nombre,paterno,materno,calle,numero,municipio,estado,telefono,partido,lider} = req.body
+    const afiliado = await afiliadosSchema.findById(id)
+    res.render("edit", {afiliado: afiliado})   
+}
+
+export const  RegistroEditado = async (req, res) =>{
+    let latitud,longuitud;  
+    try{
+        const {id} = req.params;
+        let direccion = req.body.domicilio;
+        let URL = "https://nominatim.openstreetmap.org/search?q="+direccion+"&format=geocodejson";
+            fetch(URL).then((ubicacion)=>{ 
+                return ubicacion.json()
+            }).then(async(data)=>{
+                latitud = data.features[0].geometry.coordinates[1]
+                longuitud = data.features[0].geometry.coordinates[0]
+                const doc = await afiliadosSchema.findById(id)
+                    doc.nombre = req.body.nombre,
+                    doc.paterno = req.body.paterno,
+                    doc.materno = req.body.materno,
+                    doc.domicilio = req.body.domicilio,
+                    doc.latitud = latitud,
+                    doc.longuitud = longuitud,
+                    doc.telefono = req.body.telefono,
+                    doc.partido = req.body.partido
+                    await doc.save()
+                })
+        res.redirect("home")
+    }catch (error){
+        res.status(500).json('No se puedo completar el registro')
+        console.log(error)
+    }   
+}
+
+//ELIMAR UN AFILIADO
+export const deleteRegistros = async (req, res) => {
+    try{
+        const {id} = req.params
+        await afiliadosSchema.findByIdAndDelete(id)
+        res.redirect("/home")
+    }catch(error){
+        res.status(500).json('No se encontro el registro que intenta borrar')
+    }
+    
 }

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <%-include('./partials/links')%>
+    <title>Document</title>
+</head>
+<body>
+    <%-include('./partials/nav')%>
+    <div class="container" >
+        <div class="row mt-4">
+          <div class="col-md-5">
+            <form action="/editar/<%= afiliado.id %>" method="post">
+              <p>Editar afiliado</p>
+              <div class="form-group mt-3">
+                <input type="text" name="nombre" value="<%= afiliado.nombre %>" class="form-control"/>
+              </div>
+              <div class="form-group mt-3">
+                <input type="text" name="paterno" value="<%= afiliado.paterno %>" class="form-control"/>
+              </div>
+              <div class="form-group mt-3">
+                <input type="text" name="materno" value="<%= afiliado.materno %>" class="form-control"/>
+              </div>
+              <div class="form-group mt-3">
+                <input type="text" name="domicilio" value="<%= afiliado.domicilio %>" class="form-control"/>
+              </div>
+              <div class="form-group mt-3">
+                <input type="text" name="telefono" value="<%= afiliado.telefono %>" class="form-control"/>
+              </div>
+              <div class="form-group mt-3">
+                <input type="text" name="partido" value="<%= afiliado.partido %>" class="form-control"/>
+              </div>
+              <button type="submit" class="btn mt-3 btn-success" id="btn-agregar"> Editar </button>
+            </form>
+          </div>
+        </div>
+    </div>      
+</body>
+</html>
